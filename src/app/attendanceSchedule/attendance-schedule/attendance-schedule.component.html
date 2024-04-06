@@ -1,0 +1,610 @@
+<div class="main_content_iner overly_inner">
+  <div class="container-fluid align-items-center">
+      <div class="row d-flex col-lg-6 ">
+        <div class="white_card">
+            <h3 class="text-center">Employee Attendance Schedule</h3>
+          <div class="white_card_body">
+            <div class="row mt_20">
+              <div class="col-lg-6 mb_20">
+                <div class="form-outline">
+                  <input
+                    type="search"
+                    id="searchStudent"
+                    class="form-control"
+                    placeholder="Search By Employee ID"
+                    [(ngModel)]="employeeId"
+                  />
+                </div>
+              </div>
+              <div class="col-lg-2">
+                <button
+                  type="button"
+                  class="btn btn-primary"
+                  (click)="getEmployeeInformation()">
+                  Search
+                </button>
+              </div>
+            </div>
+            <div class="row">
+              <div class="d-flex mb-3 border-bottom pb-3 pt-2">
+                <!-- Employee photo -->
+                <div class="flex-shrink-0" *ngIf="employeeInformation.photoAttachment">
+                  <img class="me-3 rounded" [src]="'data:' + employeeInformation.photoAttachment.fileType + ';base64,' + employeeInformation.photoAttachment.file" alt="{{employeeInformation.fullName}}" style="width:100px;height:100px;">
+                </div>
+                <div *ngIf="employeeInformation.employeeId">
+                  <!-- Employee name and active status -->
+                  <h4 class="mb-2">{{employeeInformation.fullName}} <span *ngIf="employeeInformation.active" class="ms-2"><i class="fa fa-dot-circle text-success" style="font-size:24px;"></i></span></h4>
+                  <!-- Employee phone number -->
+                  <p class="mb-1"> <span *ngIf="employeeInformation.personalPhone"><i class="fa fa-phone me-1 text-primary"></i></span> {{employeeInformation.personalPhone}} </p>
+                  <!-- Employee email -->
+                  <p class="mb-1"> <span *ngIf="employeeInformation.email"><i class="fa fa-envelope me-1 text-primary"></i></span> <b>{{employeeInformation.email}}</b></p>
+                  <!-- Employee gender -->
+                  <p class="mb-1" *ngIf="employeeInformation.gender">
+                    <span *ngIf="employeeInformation.gender.name==='Male'"><i class="fa fa-male me-1 text-primary"></i></span>
+                    <span *ngIf="employeeInformation.gender.name==='Female'"><i class="fa fa-female me-1 text-primary"></i></span>
+                    <b>{{employeeInformation.gender.name}}</b>
+                  </p>
+                  <!-- Employee blood group -->
+                  <p class="mb-1" *ngIf="employeeInformation.bloodGroup">
+                    <span><i class="fa fa-tint me-1 text-primary" *ngIf="employeeInformation.bloodGroup.name"></i></span>
+                    <b>{{employeeInformation.bloodGroup.name}}</b>
+                  </p>
+
+                </div>
+              </div>
+              <div class="row" *ngIf="employeeInformation.employeeId">
+                <div class="col-lg-3 d-lg-inline">
+                  <label class="form-label mb_10">Lookup Schedule</label>
+                </div>
+                <div class="col-lg-5">
+                  <div class="common_input mb_20">
+                    <select
+                      class="form-select" name="code"
+                      aria-label="Default select schedule type" [(ngModel)]="scheduleForm.scheduleType" #name="ngModel" (change)="getScheduleType($event)" required>
+                      <option value="1">Single Schedule</option>
+                      <option value="2">Organizational Schedule</option>
+                    </select>
+<!--                    <input-->
+<!--                      type="text"-->
+<!--                      name="name"-->
+<!--                      class="form-control" [(ngModel)]="scheduleForm.code" #name="ngModel" required/>-->
+                    <div>
+                      <small *ngIf="name.invalid && name.touched">Name is a required field</small>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row" *ngIf="isOrganizationalTemplate">
+              <div class="col-lg-3 d-lg-inline">
+                <label class="form-label mb_10">Organization Template</label>
+              </div>
+              <div class="col-lg-5" >
+                <div class="common_input mb_20">
+                  <select
+                    class="form-select" name="sequence"
+                    aria-label="Default select organization" [(ngModel)]="scheduleForm.organizationName" #name="ngModel"  required>
+                    <option value="1">DIU</option>
+                    <option value="2">DCL</option>
+                    <option value="3">DOL</option>
+                  </select>
+<!--                  <input-->
+<!--                    type="text"-->
+<!--                    name="name"-->
+<!--                    class="form-control" [(ngModel)]="scheduleForm.name" #name="ngModel" required/>-->
+                  <div>
+                    <small *ngIf="name.invalid && name.touched">Name is a required field</small>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div *ngIf="isSingleSchedule">
+              <div class="row" >
+                <div class="col-lg-3 d-lg-inline">
+                  <label class="form-label mb_10">Week Days</label>
+                </div>
+                <div class="col-lg-5">
+                  <div class="common_input mb_20">
+                    <select
+                      class="form-select" name="country"
+                      aria-label="Default select country" [(ngModel)]="scheduleForm.day" #name="ngModel"  required>
+                      <option value="0">Saturday</option>
+                      <option value="1">Sunday</option>
+                      <option value="2">Monday</option>
+                      <option value="3">Tuesday</option>
+                      <option value="4">Wednesday</option>
+                      <option value="5">Thursday</option>
+                      <option value="6">Friday</option>
+                    </select>
+<!--                    <input-->
+<!--                      type="text"-->
+<!--                      name="name"-->
+<!--                      class="form-control" [(ngModel)]="scheduleForm.code" #name="ngModel"  required/>-->
+                    <div>
+                      <small *ngIf="name.invalid && name.touched">Name is a required field</small>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row" >
+                <div class="col-lg-3 d-lg-inline">
+                  <label class="form-label mb_10">Day Type</label>
+                </div>
+                <div class="col-lg-5">
+                  <div class="common_input mb_20">
+                    <select
+                      class="form-select" name="country"
+                      aria-label="Default select country" [(ngModel)]="scheduleForm.dayType" #name="ngModel" (change)="getDayType($event)" required>
+                      <option value="1">Weekday</option>
+                      <option value="2">Weekend</option>
+                    </select>
+                    <!--                    <input-->
+                    <!--                      type="text"-->
+                    <!--                      name="name"-->
+                    <!--                      class="form-control" [(ngModel)]="scheduleForm.code" #name="ngModel"  required/>-->
+                    <div>
+                      <small *ngIf="name.invalid && name.touched">Name is a required field</small>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+<!--              <div class="row" >-->
+<!--                <div class="col-lg-2 d-lg-inline">-->
+<!--                  <label class="form-label mb_10">Second Weekend</label>-->
+<!--                </div>-->
+<!--                <div class="col-lg-4">-->
+<!--                  <div class="common_input mb_20">-->
+<!--                    <input-->
+<!--                      type="text"-->
+<!--                      name="name"-->
+<!--                      class="form-control" [(ngModel)]="scheduleForm.code" #name="ngModel" required/>-->
+<!--                    <div>-->
+<!--                      <small *ngIf="name.invalid && name.touched">Name is a required field</small>-->
+<!--                    </div>-->
+<!--                  </div>-->
+<!--                </div>-->
+<!--              </div>-->
+
+              <div class="row d-lg-flex text-center" *ngIf="isWeekDay" >
+                <div class="col-lg-2">
+                  <label class="form-label mb_10">Check In Time</label>
+                </div>
+                <div class="col-lg-3">
+                  <div class="common_input mb_0">
+                    <input
+                      type="time"
+                      name="name"
+                      class="form-control" [(ngModel)]="scheduleForm.inTime" #name="ngModel" min="00:00" max="23:59" required/>
+                    <div>
+                      <small *ngIf="name.invalid && name.touched">Name is a required field</small>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-2 ml_25">
+                  <label class="form-label mb_10">Check Out Time</label>
+                </div>
+                <div class="col-lg-3">
+                  <div class="common_input mb_0">
+                    <input
+                      type="time"
+                      name="name"
+                      class="form-control" [(ngModel)]="scheduleForm.outTime" #name="ngModel" min="00:00" max="23:59" required/>
+                    <div>
+                      <small *ngIf="name.invalid && name.touched">Name is a required field</small>
+                    </div>
+                  </div>
+                </div>
+              </div>
+<!--              <div class="row d-lg-flex text-center" >-->
+<!--                <div class="col-lg-1">-->
+<!--                  <label class="form-label mb_10">In Sun</label>-->
+<!--                </div>-->
+<!--                <div class="col-lg-2">-->
+<!--                  <div class="common_input mb_0">-->
+<!--                    <input-->
+<!--                      type="time"-->
+<!--                      name="name"-->
+<!--                      class="form-control" [(ngModel)]="basicForm1.detail" #name="ngModel" min="00:00" max="23:59" required/>-->
+<!--                    <div>-->
+<!--                      <small *ngIf="name.invalid && name.touched">Name is a required field</small>-->
+<!--                    </div>-->
+<!--                  </div>-->
+<!--                </div>-->
+<!--                <div class="col-lg-1 ml_25">-->
+<!--                  <label class="form-label mb_10">Out Sun</label>-->
+<!--                </div>-->
+<!--                <div class="col-lg-2">-->
+<!--                  <div class="common_input mb_0">-->
+<!--                    <input-->
+<!--                      type="time"-->
+<!--                      name="name"-->
+<!--                      class="form-control" [(ngModel)]="basicForm1.date" #name="ngModel" min="00:00" max="23:59" required/>-->
+<!--                    <div>-->
+<!--                      <small *ngIf="name.invalid && name.touched">Name is a required field</small>-->
+<!--                    </div>-->
+<!--                  </div>-->
+<!--                </div>-->
+<!--              </div>-->
+<!--              <div class="row d-lg-flex text-center" >-->
+<!--                <div class="col-lg-1">-->
+<!--                  <label class="form-label mb_10">In Mon</label>-->
+<!--                </div>-->
+<!--                <div class="col-lg-2">-->
+<!--                  <div class="common_input mb_0">-->
+<!--                    <input-->
+<!--                      type="time"-->
+<!--                      name="name"-->
+<!--                      class="form-control" [(ngModel)]="basicForm1.detail" #name="ngModel" min="00:00" max="23:59" required/>-->
+<!--                    <div>-->
+<!--                      <small *ngIf="name.invalid && name.touched">Name is a required field</small>-->
+<!--                    </div>-->
+<!--                  </div>-->
+<!--                </div>-->
+<!--                <div class="col-lg-1 ml_25">-->
+<!--                  <label class="form-label mb_10">Out Mon</label>-->
+<!--                </div>-->
+<!--                <div class="col-lg-2">-->
+<!--                  <div class="common_input mb_0">-->
+<!--                    <input-->
+<!--                      type="time"-->
+<!--                      name="name"-->
+<!--                      class="form-control" [(ngModel)]="basicForm1.date" #name="ngModel" min="00:00" max="23:59" required/>-->
+<!--                    <div>-->
+<!--                      <small *ngIf="name.invalid && name.touched">Name is a required field</small>-->
+<!--                    </div>-->
+<!--                  </div>-->
+<!--                </div>-->
+<!--              </div>-->
+<!--              <div class="row d-lg-flex text-center" >-->
+<!--                <div class="col-lg-1">-->
+<!--                  <label class="form-label mb_10">In Tue</label>-->
+<!--                </div>-->
+<!--                <div class="col-lg-2">-->
+<!--                  <div class="common_input mb_0">-->
+<!--                    <input-->
+<!--                      type="time"-->
+<!--                      name="name"-->
+<!--                      class="form-control" [(ngModel)]="basicForm1.detail" #name="ngModel" min="00:00" max="23:59" required/>-->
+<!--                    <div>-->
+<!--                      <small *ngIf="name.invalid && name.touched">Name is a required field</small>-->
+<!--                    </div>-->
+<!--                  </div>-->
+<!--                </div>-->
+<!--                <div class="col-lg-1 ml_25">-->
+<!--                  <label class="form-label mb_10">Out Tue</label>-->
+<!--                </div>-->
+<!--                <div class="col-lg-2">-->
+<!--                  <div class="common_input mb_0">-->
+<!--                    <input-->
+<!--                      type="time"-->
+<!--                      name="name"-->
+<!--                      class="form-control" [(ngModel)]="basicForm1.date" #name="ngModel" min="00:00" max="23:59" required/>-->
+<!--                    <div>-->
+<!--                      <small *ngIf="name.invalid && name.touched">Name is a required field</small>-->
+<!--                    </div>-->
+<!--                  </div>-->
+<!--                </div>-->
+<!--              </div>-->
+<!--              <div class="row d-lg-flex text-center" >-->
+<!--                <div class="col-lg-1">-->
+<!--                  <label class="form-label mb_10">In Wed</label>-->
+<!--                </div>-->
+<!--                <div class="col-lg-2">-->
+<!--                  <div class="common_input mb_0">-->
+<!--                    <input-->
+<!--                      type="time"-->
+<!--                      name="name"-->
+<!--                      class="form-control" [(ngModel)]="basicForm1.detail" #name="ngModel" min="00:00" max="23:59" required/>-->
+<!--                    <div>-->
+<!--                      <small *ngIf="name.invalid && name.touched">Name is a required field</small>-->
+<!--                    </div>-->
+<!--                  </div>-->
+<!--                </div>-->
+<!--                <div class="col-lg-1 ml_25">-->
+<!--                  <label class="form-label mb_10">Out Wed</label>-->
+<!--                </div>-->
+<!--                <div class="col-lg-2">-->
+<!--                  <div class="common_input mb_0">-->
+<!--                    <input-->
+<!--                      type="time"-->
+<!--                      name="name"-->
+<!--                      class="form-control" [(ngModel)]="basicForm1.date" #name="ngModel" min="00:00" max="23:59" required/>-->
+<!--                    <div>-->
+<!--                      <small *ngIf="name.invalid && name.touched">Name is a required field</small>-->
+<!--                    </div>-->
+<!--                  </div>-->
+<!--                </div>-->
+<!--              </div>-->
+<!--              <div class="row d-lg-flex text-center" >-->
+<!--                <div class="col-lg-1">-->
+<!--                  <label class="form-label mb_10">In Thu</label>-->
+<!--                </div>-->
+<!--                <div class="col-lg-2">-->
+<!--                  <div class="common_input mb_0">-->
+<!--                    <input-->
+<!--                      type="time"-->
+<!--                      name="name"-->
+<!--                      class="form-control" [(ngModel)]="basicForm1.detail" #name="ngModel" min="00:00" max="23:59" required/>-->
+<!--                    <div>-->
+<!--                      <small *ngIf="name.invalid && name.touched">Name is a required field</small>-->
+<!--                    </div>-->
+<!--                  </div>-->
+<!--                </div>-->
+<!--                <div class="col-lg-1 ml_25">-->
+<!--                  <label class="form-label mb_10">Out Thu</label>-->
+<!--                </div>-->
+<!--                <div class="col-lg-2">-->
+<!--                  <div class="common_input mb_0">-->
+<!--                    <input-->
+<!--                      type="time"-->
+<!--                      name="name"-->
+<!--                      class="form-control" [(ngModel)]="basicForm1.date" #name="ngModel" min="00:00" max="23:59" required/>-->
+<!--                    <div>-->
+<!--                      <small *ngIf="name.invalid && name.touched">Name is a required field</small>-->
+<!--                    </div>-->
+<!--                  </div>-->
+<!--                </div>-->
+<!--              </div>-->
+<!--              <div class="row d-lg-flex text-center" >-->
+<!--                <div class="col-lg-1">-->
+<!--                  <label class="form-label mb_10">In Fri</label>-->
+<!--                </div>-->
+<!--                <div class="col-lg-2">-->
+<!--                  <div class="common_input mb_0">-->
+<!--                    <input-->
+<!--                      type="time"-->
+<!--                      name="name"-->
+<!--                      class="form-control" [(ngModel)]="basicForm1.detail" #name="ngModel" min="00:00" max="23:59" required/>-->
+<!--                    <div>-->
+<!--                      <small *ngIf="name.invalid && name.touched">Name is a required field</small>-->
+<!--                    </div>-->
+<!--                  </div>-->
+<!--                </div>-->
+<!--                <div class="col-lg-1 ml_25">-->
+<!--                  <label class="form-label mb_10">Out Fri</label>-->
+<!--                </div>-->
+<!--                <div class="col-lg-2">-->
+<!--                  <div class="common_input mb_0">-->
+<!--                    <input-->
+<!--                      type="time"-->
+<!--                      name="name"-->
+<!--                      class="form-control" [(ngModel)]="basicForm1.date" #name="ngModel" min="00:00" max="23:59" required/>-->
+<!--                    <div>-->
+<!--                      <small *ngIf="name.invalid && name.touched">Name is a required field</small>-->
+<!--                    </div>-->
+<!--                  </div>-->
+<!--                </div>-->
+<!--                &lt;!&ndash;        </div>&ndash;&gt;-->
+<!--                &lt;!&ndash;      <div class="col-lg-2">&ndash;&gt;-->
+<!--                &lt;!&ndash;        <div class="white_card card_height_100 mb_20">&ndash;&gt;-->
+<!--                &lt;!&ndash;          <div class="white_card_header">&ndash;&gt;-->
+<!--                &lt;!&ndash;            <div class="white_box_tittle">&ndash;&gt;-->
+<!--                &lt;!&ndash;              <h4 *ngIf="isSaveButton">Create Basic Form Element</h4>&ndash;&gt;-->
+<!--                &lt;!&ndash;              <h4 *ngIf="isUpdateButton">Update Basic Form Element</h4>&ndash;&gt;-->
+<!--                &lt;!&ndash;            </div>&ndash;&gt;-->
+<!--                &lt;!&ndash;          </div>&ndash;&gt;-->
+<!--                &lt;!&ndash;          <div class="white_card_body">&ndash;&gt;-->
+<!--                &lt;!&ndash;            <form #validationForm="ngForm">&ndash;&gt;-->
+<!--                &lt;!&ndash;              <div class="row"  ngModelGroup="basicFormData" #basicFormData="ngModelGroup">&ndash;&gt;-->
+<!--                &lt;!&ndash;                <div class="col-lg-12">&ndash;&gt;-->
+<!--                &lt;!&ndash;                  <label class="form-label mb_10">Name</label>&ndash;&gt;-->
+<!--                &lt;!&ndash;                  <div class="common_input mb_20">&ndash;&gt;-->
+<!--                &lt;!&ndash;                    <input&ndash;&gt;-->
+<!--                &lt;!&ndash;                      type="text"&ndash;&gt;-->
+<!--                &lt;!&ndash;                      name="name"&ndash;&gt;-->
+<!--                &lt;!&ndash;                      class="form-control" [(ngModel)]="basicForm.name" #name="ngModel" required/>&ndash;&gt;-->
+<!--                &lt;!&ndash;                    <div>&ndash;&gt;-->
+<!--                &lt;!&ndash;                      <small *ngIf="name.invalid && name.touched">Name is a required field</small>&ndash;&gt;-->
+<!--                &lt;!&ndash;                    </div>&ndash;&gt;-->
+<!--                &lt;!&ndash;                  </div>&ndash;&gt;-->
+<!--                &lt;!&ndash;                </div>&ndash;&gt;-->
+<!--                &lt;!&ndash;                <div class="col-lg-4">&ndash;&gt;-->
+<!--                &lt;!&ndash;                  <label class="form-label mb_10">Code</label>&ndash;&gt;-->
+<!--                &lt;!&ndash;                  <div class="common_input mb_20">&ndash;&gt;-->
+<!--                &lt;!&ndash;                    <input&ndash;&gt;-->
+<!--                &lt;!&ndash;                      type="text"&ndash;&gt;-->
+<!--                &lt;!&ndash;                      name="code"&ndash;&gt;-->
+<!--                &lt;!&ndash;                      class="form-control" [(ngModel)]="basicForm.code" #code="ngModel" required&ndash;&gt;-->
+<!--                &lt;!&ndash;                    />&ndash;&gt;-->
+<!--                &lt;!&ndash;                    <div>&ndash;&gt;-->
+<!--                &lt;!&ndash;                      <small *ngIf="code.invalid && code.touched">Code is a required field</small>&ndash;&gt;-->
+<!--                &lt;!&ndash;                    </div>&ndash;&gt;-->
+<!--                &lt;!&ndash;                  </div>&ndash;&gt;-->
+<!--                &lt;!&ndash;                </div>&ndash;&gt;-->
+<!--                &lt;!&ndash;                <div class="col-lg-6">&ndash;&gt;-->
+<!--                &lt;!&ndash;                  <label class="form-label mb_10">Sequence</label>&ndash;&gt;-->
+<!--                &lt;!&ndash;                  <div class="common_input mb_20">&ndash;&gt;-->
+<!--                &lt;!&ndash;                    <input&ndash;&gt;-->
+<!--                &lt;!&ndash;                      type="number"&ndash;&gt;-->
+<!--                &lt;!&ndash;                      name="sequence"&ndash;&gt;-->
+<!--                &lt;!&ndash;                      class="form-control"&ndash;&gt;-->
+<!--                &lt;!&ndash;                      min="1"&ndash;&gt;-->
+<!--                &lt;!&ndash;                      [(ngModel)]="basicForm.sequence" #sequence="ngModel" required&ndash;&gt;-->
+<!--                &lt;!&ndash;                    />&ndash;&gt;-->
+<!--                &lt;!&ndash;                    <div>&ndash;&gt;-->
+<!--                &lt;!&ndash;                      <small *ngIf="sequence.invalid && sequence.touched">Sequence is a required field</small>&ndash;&gt;-->
+<!--                &lt;!&ndash;                    </div>&ndash;&gt;-->
+<!--                &lt;!&ndash;                  </div>&ndash;&gt;-->
+<!--                &lt;!&ndash;                </div>&ndash;&gt;-->
+<!--                &lt;!&ndash;                <div class="col-lg-12">&ndash;&gt;-->
+<!--                &lt;!&ndash;                  <label class="form-label mb_10">Detail</label>&ndash;&gt;-->
+<!--                &lt;!&ndash;                  <div class="common_input mb_20">&ndash;&gt;-->
+<!--                &lt;!&ndash;                  <textarea class="form-control" maxlength="225" rows="3" name="detail" id="maxlength-textarea"&ndash;&gt;-->
+<!--                &lt;!&ndash;                            placeholder="This textarea has a limit of 225 chars."&ndash;&gt;-->
+<!--                &lt;!&ndash;                            [(ngModel)]="basicForm.detail" #detail="ngModel" required></textarea>&ndash;&gt;-->
+<!--                &lt;!&ndash;                    <div>&ndash;&gt;-->
+<!--                &lt;!&ndash;                      <small *ngIf="detail.invalid && detail.touched">Detail is a required field</small>&ndash;&gt;-->
+<!--                &lt;!&ndash;                    </div>&ndash;&gt;-->
+<!--                &lt;!&ndash;                  </div>&ndash;&gt;-->
+<!--                &lt;!&ndash;                </div>&ndash;&gt;-->
+
+<!--                &lt;!&ndash;                <div class="col-lg-12">&ndash;&gt;-->
+<!--                &lt;!&ndash;                  <label class="form-label mb_10">Date</label>&ndash;&gt;-->
+<!--                &lt;!&ndash;                  <div class="common_input mb_20">&ndash;&gt;-->
+<!--                &lt;!&ndash;                    <input&ndash;&gt;-->
+<!--                &lt;!&ndash;                      type="date"&ndash;&gt;-->
+<!--                &lt;!&ndash;                      name="date"&ndash;&gt;-->
+<!--                &lt;!&ndash;                      class="form-control" [(ngModel)]="basicForm.date" #date="ngModel" required&ndash;&gt;-->
+<!--                &lt;!&ndash;                    />&ndash;&gt;-->
+<!--                &lt;!&ndash;                    <div>&ndash;&gt;-->
+<!--                &lt;!&ndash;                      <small *ngIf="date.invalid && date.touched">Date is a required field</small>&ndash;&gt;-->
+<!--                &lt;!&ndash;                    </div>&ndash;&gt;-->
+<!--                &lt;!&ndash;                  </div>&ndash;&gt;-->
+<!--                &lt;!&ndash;                </div>&ndash;&gt;-->
+<!--                &lt;!&ndash;                <div class="col-lg-12">&ndash;&gt;-->
+<!--                &lt;!&ndash;                  <label class="form-label mb_10">Country</label>&ndash;&gt;-->
+<!--                &lt;!&ndash;                  <div class="common_input mb_20">&ndash;&gt;-->
+<!--                &lt;!&ndash;                    <select&ndash;&gt;-->
+<!--                &lt;!&ndash;                      class="form-select" name="country"&ndash;&gt;-->
+<!--                &lt;!&ndash;                      aria-label="Default select country" [(ngModel)]="basicForm.country" #country="ngModel" required>&ndash;&gt;-->
+<!--                &lt;!&ndash;                      <option>Test</option>&ndash;&gt;-->
+<!--                &lt;!&ndash;                    </select>&ndash;&gt;-->
+<!--                &lt;!&ndash;                    <div>&ndash;&gt;-->
+<!--                &lt;!&ndash;                      <small *ngIf="country.invalid && country.touched">Country is a required field</small>&ndash;&gt;-->
+<!--                &lt;!&ndash;                    </div>&ndash;&gt;-->
+<!--                &lt;!&ndash;                  </div>&ndash;&gt;-->
+<!--                &lt;!&ndash;                </div>&ndash;&gt;-->
+<!--                &lt;!&ndash;                <div class="col-lg-12">&ndash;&gt;-->
+<!--                &lt;!&ndash;                  <label class="form-label mb_10">Division</label>&ndash;&gt;-->
+<!--                &lt;!&ndash;                  <div class="common_input mb_20">&ndash;&gt;-->
+<!--                &lt;!&ndash;                    <ng-select name="division" [(ngModel)]="basicForm.division" #division="ngModel" required>&ndash;&gt;-->
+<!--                &lt;!&ndash;                      <ng-option>Select 1</ng-option>&ndash;&gt;-->
+<!--                &lt;!&ndash;                      <ng-option>Select 2</ng-option>&ndash;&gt;-->
+<!--                &lt;!&ndash;                      <ng-option>Select 3</ng-option>&ndash;&gt;-->
+<!--                &lt;!&ndash;                    </ng-select>&ndash;&gt;-->
+<!--                &lt;!&ndash;                    <div>&ndash;&gt;-->
+<!--                &lt;!&ndash;                      <small *ngIf="division.invalid && division.touched">Division is a required field</small>&ndash;&gt;-->
+<!--                &lt;!&ndash;                    </div>&ndash;&gt;-->
+<!--                &lt;!&ndash;                  </div>&ndash;&gt;-->
+<!--                &lt;!&ndash;                </div>&ndash;&gt;-->
+<!--                &lt;!&ndash;                <div class="col-lg-12">&ndash;&gt;-->
+<!--                &lt;!&ndash;                  <label class="form-label mb_10">City</label>&ndash;&gt;-->
+<!--                &lt;!&ndash;                  <div class="common_input mb_20">&ndash;&gt;-->
+<!--                &lt;!&ndash;                    <ng-select name="city" [(ngModel)]="basicForm.city" #city="ngModel" required>&ndash;&gt;-->
+<!--                &lt;!&ndash;                      <ng-option>Select 1</ng-option>&ndash;&gt;-->
+<!--                &lt;!&ndash;                      <ng-option>Select 2</ng-option>&ndash;&gt;-->
+<!--                &lt;!&ndash;                      <ng-option>Select 3</ng-option>&ndash;&gt;-->
+<!--                &lt;!&ndash;                    </ng-select>&ndash;&gt;-->
+<!--                &lt;!&ndash;                    <div>&ndash;&gt;-->
+<!--                &lt;!&ndash;                      <small *ngIf="city.invalid && city.touched">City is a required field</small>&ndash;&gt;-->
+<!--                &lt;!&ndash;                    </div>&ndash;&gt;-->
+<!--                &lt;!&ndash;                  </div>&ndash;&gt;-->
+<!--                &lt;!&ndash;                </div>&ndash;&gt;-->
+<!--                &lt;!&ndash;                <div class="col-lg-12">&ndash;&gt;-->
+<!--                &lt;!&ndash;                  <div class="row">&ndash;&gt;-->
+<!--                &lt;!&ndash;                    <div class="col-form-label col-sm-4 pt-0">Gender</div>&ndash;&gt;-->
+<!--                &lt;!&ndash;                    <div class="col-sm-8">&ndash;&gt;-->
+<!--                &lt;!&ndash;                      <div class="form-check">&ndash;&gt;-->
+<!--                &lt;!&ndash;                        <input class="form-check-input" type="radio" name="gender" (change)="basicForm.gender = 'M'" id="gender1" value="M"&ndash;&gt;-->
+<!--                &lt;!&ndash;                               checked="">&ndash;&gt;-->
+<!--                &lt;!&ndash;                        <label class="form-label form-check-label" for="gender1">&ndash;&gt;-->
+<!--                &lt;!&ndash;                          Male&ndash;&gt;-->
+<!--                &lt;!&ndash;                        </label>&ndash;&gt;-->
+<!--                &lt;!&ndash;                      </div>&ndash;&gt;-->
+<!--                &lt;!&ndash;                      <div class="form-check">&ndash;&gt;-->
+<!--                &lt;!&ndash;                        <input class="form-check-input" type="radio" name="gender" (change)="basicForm.gender = 'F'"  id="gender2" value="F">&ndash;&gt;-->
+<!--                &lt;!&ndash;                        <label class="form-label form-check-label" for="gender2">&ndash;&gt;-->
+<!--                &lt;!&ndash;                          Female&ndash;&gt;-->
+<!--                &lt;!&ndash;                        </label>&ndash;&gt;-->
+<!--                &lt;!&ndash;                      </div>&ndash;&gt;-->
+<!--                &lt;!&ndash;                      <div class="form-check">&ndash;&gt;-->
+<!--                &lt;!&ndash;                        <input class="form-check-input" type="radio" name="gender" (change)="basicForm.gender = 'O'"  id="gender3" value="O">&ndash;&gt;-->
+<!--                &lt;!&ndash;                        <label class="form-label form-check-label" for="gender3">&ndash;&gt;-->
+<!--                &lt;!&ndash;                          Other&ndash;&gt;-->
+<!--                &lt;!&ndash;                        </label>&ndash;&gt;-->
+<!--                &lt;!&ndash;                      </div>&ndash;&gt;-->
+<!--                &lt;!&ndash;                    </div>&ndash;&gt;-->
+<!--                &lt;!&ndash;                  </div>&ndash;&gt;-->
+<!--                &lt;!&ndash;                </div>&ndash;&gt;-->
+<!--                &lt;!&ndash;                <div class="col-lg-12">&ndash;&gt;-->
+<!--                &lt;!&ndash;                  <div class="mb-3 form-check">&ndash;&gt;-->
+<!--                &lt;!&ndash;                    <input type="checkbox" class="form-check-input" name="acknowledgement" id="acknowledgement"  [(ngModel)]="basicForm.acknowledgement" #acknowledgement="ngModel" required>&ndash;&gt;-->
+<!--                &lt;!&ndash;                    <label class="form-label mb_10"> I acknowledge.</label>&ndash;&gt;-->
+<!--                &lt;!&ndash;                    <div>&ndash;&gt;-->
+<!--                &lt;!&ndash;                      <small *ngIf="acknowledgement.invalid && acknowledgement.touched">This is a required field</small>&ndash;&gt;-->
+<!--                &lt;!&ndash;                    </div>&ndash;&gt;-->
+<!--                &lt;!&ndash;                  </div>&ndash;&gt;-->
+<!--                &lt;!&ndash;                </div>&ndash;&gt;-->
+
+<!--                &lt;!&ndash;                <div class="col-lg-12">&ndash;&gt;-->
+<!--                &lt;!&ndash;                  <button type="submit" class="btn btn-primary" *ngIf="isSaveButton" (click)="saveData()" [disabled]="basicFormData.invalid">&ndash;&gt;-->
+<!--                &lt;!&ndash;                    <i class="fa fa-save mr_10" aria-hidden="true"></i>Save&ndash;&gt;-->
+<!--                &lt;!&ndash;                  </button>&ndash;&gt;-->
+<!--                &lt;!&ndash;                  <button type="submit" class="btn btn-success mr_10" *ngIf="isUpdateButton" (click)="updateData()"&ndash;&gt;-->
+<!--                &lt;!&ndash;                          [disabled]="basicFormData.invalid">&ndash;&gt;-->
+<!--                &lt;!&ndash;                    <i class="fa fa-save mr_10" aria-hidden="true"></i>Update&ndash;&gt;-->
+<!--                &lt;!&ndash;                  </button>&ndash;&gt;-->
+<!--                &lt;!&ndash;                  <button type="submit" class="btn btn-danger" *ngIf="isUpdateButton" (click)="cancelData()">&ndash;&gt;-->
+<!--                &lt;!&ndash;                    <i class="fa fa-window-close mr_10" aria-hidden="true"></i>Cancel&ndash;&gt;-->
+<!--                &lt;!&ndash;                  </button>&ndash;&gt;-->
+<!--                &lt;!&ndash;                </div>&ndash;&gt;-->
+<!--                &lt;!&ndash;              </div>&ndash;&gt;-->
+<!--                &lt;!&ndash;            </form>&ndash;&gt;-->
+<!--                &lt;!&ndash;          </div>&ndash;&gt;-->
+<!--                &lt;!&ndash;        </div>&ndash;&gt;-->
+<!--                &lt;!&ndash;      </div>&ndash;&gt;-->
+<!--                &lt;!&ndash;      <div class="col-lg-8">&ndash;&gt;-->
+<!--                &lt;!&ndash;        <div class="white_card card_height_100 mb_20">&ndash;&gt;-->
+<!--                &lt;!&ndash;          <div class="white_card_header">&ndash;&gt;-->
+<!--                &lt;!&ndash;            <div class="white_box_tittle">&ndash;&gt;-->
+<!--                &lt;!&ndash;              <h4>Basic Form List</h4>&ndash;&gt;-->
+<!--                &lt;!&ndash;            </div>&ndash;&gt;-->
+<!--                &lt;!&ndash;          </div>&ndash;&gt;-->
+<!--                &lt;!&ndash;          <div class="white_card_body">&ndash;&gt;-->
+<!--                &lt;!&ndash;            <div class="row">&ndash;&gt;-->
+<!--                &lt;!&ndash;              <div class="col-lg-12">&ndash;&gt;-->
+<!--                &lt;!&ndash;                <div class="row pt-3">&ndash;&gt;-->
+<!--                &lt;!&ndash;                  <div class="table-responsive">&ndash;&gt;-->
+<!--                &lt;!&ndash;                    <table class="table">&ndash;&gt;-->
+<!--                &lt;!&ndash;                      <thead>&ndash;&gt;-->
+<!--                &lt;!&ndash;                      <tr>&ndash;&gt;-->
+<!--                &lt;!&ndash;                        <th scope="col">SL</th>&ndash;&gt;-->
+<!--                &lt;!&ndash;                        <th scope="col">Name</th>&ndash;&gt;-->
+<!--                &lt;!&ndash;                        <th scope="col">Code</th>&ndash;&gt;-->
+<!--                &lt;!&ndash;                        <th scope="col">Sequence</th>&ndash;&gt;-->
+<!--                &lt;!&ndash;                        <th scope="col">Date</th>&ndash;&gt;-->
+<!--                &lt;!&ndash;                        <th scope="col">Country</th>&ndash;&gt;-->
+<!--                &lt;!&ndash;                        <th scope="col">Gender</th>&ndash;&gt;-->
+<!--                &lt;!&ndash;                        <th scope="col">Action</th>&ndash;&gt;-->
+<!--                &lt;!&ndash;                      </tr>&ndash;&gt;-->
+<!--                &lt;!&ndash;                      </thead>&ndash;&gt;-->
+<!--                &lt;!&ndash;                      <tbody>&ndash;&gt;-->
+<!--                &lt;!&ndash;                      <tr *ngFor="let data of list; let i = index;">&ndash;&gt;-->
+<!--                &lt;!&ndash;                        <td>{{i+1}}</td>&ndash;&gt;-->
+<!--                &lt;!&ndash;                        <td>{{data.name}}</td>&ndash;&gt;-->
+<!--                &lt;!&ndash;                        <td>{{data.code}}</td>&ndash;&gt;-->
+<!--                &lt;!&ndash;                        <td>{{data.sequence}}</td>&ndash;&gt;-->
+<!--                &lt;!&ndash;                        <td>{{data.date}}</td>&ndash;&gt;-->
+<!--                &lt;!&ndash;                        <td>{{data.country}}</td>&ndash;&gt;-->
+<!--                &lt;!&ndash;                        <td>{{data.gender}}</td>&ndash;&gt;-->
+<!--                &lt;!&ndash;                        <td>&ndash;&gt;-->
+<!--                &lt;!&ndash;                          <button class="btn btn-primary mr_10">&ndash;&gt;-->
+<!--                &lt;!&ndash;                            <i class="fa fa-eye" aria-hidden="true"></i>&ndash;&gt;-->
+<!--                &lt;!&ndash;                          </button>&ndash;&gt;-->
+<!--                &lt;!&ndash;                          <button class="btn btn-success mr_10" (click)="editData(data)">&ndash;&gt;-->
+<!--                &lt;!&ndash;                            <i class="fa fa-edit" aria-hidden="true"></i>&ndash;&gt;-->
+<!--                &lt;!&ndash;                          </button>&ndash;&gt;-->
+<!--                &lt;!&ndash;                          <button class="btn btn-danger ml_5" (click)="deleteData(data)">&ndash;&gt;-->
+<!--                &lt;!&ndash;                            <i class="fa fa-trash" aria-hidden="true"></i>&ndash;&gt;-->
+<!--                &lt;!&ndash;                          </button>&ndash;&gt;-->
+<!--                &lt;!&ndash;                        </td>&ndash;&gt;-->
+<!--                &lt;!&ndash;                      </tr>&ndash;&gt;-->
+<!--                &lt;!&ndash;                      </tbody>&ndash;&gt;-->
+<!--                &lt;!&ndash;                    </table>&ndash;&gt;-->
+<!--                &lt;!&ndash;                  </div>&ndash;&gt;-->
+<!--                &lt;!&ndash;                </div>&ndash;&gt;-->
+<!--                &lt;!&ndash;              </div>&ndash;&gt;-->
+<!--                &lt;!&ndash;            </div>&ndash;&gt;-->
+<!--                &lt;!&ndash;          </div>&ndash;&gt;-->
+<!--                &lt;!&ndash;        </div>&ndash;&gt;-->
+<!--                &lt;!&ndash;      </div>&ndash;&gt;-->
+
+
+<!--              </div>-->
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

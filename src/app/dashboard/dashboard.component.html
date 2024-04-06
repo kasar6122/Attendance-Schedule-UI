@@ -1,0 +1,120 @@
+<div class="main_content_iner">
+  <div class="container-fluid p-0 sm_padding_15px">
+    <div class="row">
+      <div class="col-12">
+        <div class="page_title_box d-flex flex-wrap align-items-center justify-content-between">
+          <div class="page_title_left">
+            <h3 class="mb-0">Dashboard</h3>
+            <p>Academic Setup</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-lg-3">
+
+        <div class="card_box box_shadow position-relative mb_30 diu_bg">
+          <div class="white_box_tittle diu_bg">
+            <div class="main-title2">
+              <h4 class="mb-2 nowrap text_white text-center">
+                6
+              </h4>
+            </div>
+          </div>
+          <a routerLink="faculty-list">
+            <div class="box_body">
+              <h4 class="mb-2 nowrap text_white text-center">Faculty</h4>
+            </div>
+          </a>
+        </div>
+      </div>
+      <div class="col-lg-3">
+
+        <div class="card_box box_shadow position-relative mb_30 diu_bg">
+          <div class="white_box_tittle diu_bg">
+            <div class="main-title2">
+              <h4 class="mb-2 nowrap text_white text-center">
+                24
+              </h4>
+            </div>
+          </div>
+          <a routerLink="department-list">
+            <div class="box_body">
+              <h4 class="mb-2 nowrap text_white text-center">Department</h4>
+            </div>
+          </a>
+        </div>
+      </div>
+      <div class="col-lg-3">
+        <div class="card_box box_shadow position-relative mb_30 diu_bg">
+          <div class="white_box_tittle diu_bg">
+            <div class="main-title2">
+              <h4 class="mb-2 nowrap text_white text-center">
+                48
+              </h4>
+            </div>
+          </div>
+          <a routerLink="program-list">
+            <div class="box_body">
+              <h4 class="mb-2 nowrap text_white text-center">Program</h4>
+            </div>
+          </a>
+        </div>
+      </div>
+      <div class="col-lg-3">
+        <div class="card_box box_shadow position-relative mb_30 diu_bg">
+          <div class="white_box_tittle diu_bg">
+            <div class="main-title2">
+              <h4 class="mb-2 nowrap text_white text-center">
+                500
+              </h4>
+            </div>
+          </div>
+          <a routerLink="course-repository-list">
+            <div class="box_body">
+              <h4 class="mb-2 nowrap text_white text-center">Course Repository</h4>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-lg-6">
+        <div class="white_card card_height_100 mb_20">
+          <div class="white_card_header">
+            <div class="white_box_tittle">
+              <h4>
+                Faculty Overview
+              </h4>
+            </div>
+          </div>
+          <div class="white_card_body">
+            <div class="row">
+              <div class="col-lg-12">
+                <canvas  id="MyChart" class="pie_chart">{{ chart }}</canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <div class="white_card card_height_100 mb_20">
+          <div class="white_card_header">
+            <div class="white_box_tittle">
+              <h4>Section Overview</h4>
+            </div>
+          </div>
+          <div class="white_card_body">
+            <div class="row">
+              <div class="col-lg-12">
+                <canvas  id="SaleChart" class="sale_chart">{{ saleChart }}</canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

@@ -1,0 +1,65 @@
+<nav class="sidebar dark_sidebar">
+  <div class="logo d-flex justify-content-between">
+    <a class="large_logo" routerLink=""
+    ><img src="/assets/img/logo_white.png" alt=""
+    /></a>
+    <a class="small_logo" routerLink=""
+    ><img src="/assets/img/diu.ico" alt=""
+    /></a>
+    <div class="sidebar_close_icon d-lg-none">
+      <i class="ti-close"></i>
+    </div>
+  </div>
+
+  <ul id="sidebar_menu">
+    <li class="">
+      <a routerLink="" aria-expanded="false" routerLinkActive="active">
+        <div class="nav_icon_small">
+          <img src="/assets/img/menu-icon/dashboard.png" alt="" />
+        </div>
+        <div class="nav_title">
+          <span>Dashboard</span>
+        </div>
+      </a>
+    </li>
+
+    <li class="">
+      <a routerLink="attendance-schedule" aria-expanded="false" routerLinkActive="active">
+        <div class="nav_icon_small">
+          <img src="/assets/img/menu-icon/student_attendance.png" alt="" />
+        </div>
+        <div class="nav_title">
+          <span>Attendance Schedule</span>
+        </div>
+      </a>
+    </li>
+
+    <li class="">
+      <a class="has-arrow" href="#" aria-expanded="false" routerLinkActive="active">
+        <div class="nav_icon_small">
+          <img src="/assets/img/menu-icon/institute.png" alt="" />
+        </div>
+        <div class="nav_title">
+          <span>Form Element</span>
+        </div>
+      </a>
+      <ul>
+        <li><a routerLink="basic-form" >Basic Form</a></li>
+        <li><a routerLink="basic-page-form-list" routerLinkActive="active">Basic Page Form</a></li>
+        <li *ngIf="menuRoleAccess('role')"><a routerLink="batch-list" routerLinkActive="active">Demo Form</a></li>
+      </ul>
+    </li>
+    <li class="">
+      <a (click)="logout()" aria-expanded="false">
+        <div class="nav_icon_small">
+          <img src="/assets/img/menu-icon/14.svg" alt="" />
+        </div>
+        <div class="nav_title">
+          <span>Logout</span>
+        </div>
+      </a>
+    </li>
+
+
+  </ul>
+</nav>
